@@ -36,10 +36,7 @@ fun MainScreen() {
     var attendanceGrade by remember { mutableStateOf("100") }
     var presentationGrade by remember { mutableStateOf("100") }
     var finalProjectGrade by remember { mutableStateOf("100") }
-    var homeworkGrades = remember {
-        mutableStateListOf<String>()
-            .also { list -> repeat(5) { list.add("100") } }
-    }
+    var homeworkGrades = remember { mutableStateListOf<String>("100") }
     var totalGrade by remember { mutableStateOf("") }
     GradeCalculatorTheme {
         Surface(
@@ -48,7 +45,7 @@ fun MainScreen() {
         ) {
         }
         Column(
-            verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.Top),
+            verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top),
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
@@ -91,21 +88,37 @@ fun MainScreen() {
 
             Box {
                 Text(text = "Homeworks")
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(0.dp, 20.dp)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.Top),
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    repeat(5) {
-                        GradeComposable(
-                            grade = homeworkGrades[it],
-                            onChange = { newGrade ->
-                                homeworkGrades[it] = validateBound(newGrade)
-                            },
-                            gradeType = "${it + 1}",
-                            modifier = Modifier.weight(1f)
-                        )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(0.dp, 20.dp)
+                    ) {
+                        repeat(homeworkGrades.size) {
+                            GradeComposable(
+                                grade = homeworkGrades[it],
+                                onChange = { newGrade ->
+                                    homeworkGrades[it] = validateBound(newGrade)
+                                },
+                                gradeType = "${it + 1}",
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier) {
+                        Button(onClick = { if (homeworkGrades.size < 5) homeworkGrades.add("100") }) {
+                            Text(text = "Add Homework")
+                        }
+                        Button(onClick = { if (homeworkGrades.size > 0) homeworkGrades.remove(homeworkGrades.last()) }) {
+                            Text(text = "Remove Homework")
+
+                        }
                     }
                 }
             }
@@ -120,7 +133,6 @@ fun MainScreen() {
                     homeworkGrades
                 ).toString()
             }) {
-
                 Text(text = "Calculate")
             }
 
@@ -150,7 +162,7 @@ fun GradeComposable(
     )
 }
 
-fun validateLength(text: String) = text.length <= 3
+
 
 fun validateBound(text: String): String {
     try {
