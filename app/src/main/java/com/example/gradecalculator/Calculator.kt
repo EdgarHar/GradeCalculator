@@ -20,7 +20,7 @@ class Calculator() {
     ): Double {
 
         var homeworkGrade = homeworkGrades
-            .map { it.toInt() }
+            .map { it.toDouble() }
             .average()
         return (ATTENDANCE_PERCENTAGE * attendanceGrade.toDouble()
                 + HOMEWORK_PERCENTAGE * homeworkGrade
